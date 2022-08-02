@@ -12,6 +12,9 @@ func Run() {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		extract.Class(file)
+		classes:=extract.Class(file)
+		for class:=range classes{
+			fmt.Println(class)
+		}
 	}
 }

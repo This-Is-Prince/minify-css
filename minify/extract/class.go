@@ -1,34 +1,35 @@
 package extract
 
 import (
-	"bufio"
-	"io"
-	"log"
 	"os"
+	"strings"
+
+	"github.com/This-Is-Prince/minify-css/minify/utils"
+	"golang.org/x/net/html"
 )
-
-type flags struct {
-	isBodyFound bool
-}
-
-func (f *flags) reset() {
-	f.isBodyFound = false
-}
-
-var f = &flags{}
 
 func Class(file *os.File) map[string]struct{} {
 	classesMap := make(map[string]struct{})
-	reader := bufio.NewReader(file)
-	f.reset()
-
+	htmlTokens := html.NewTokenizer(file)
+loop:
 	for {
-		_, err := reader.ReadByte()
-		if err != nil {
-			if err == io.EOF {
-				break
+		tt := htmlTokens.Next()
+		switch tt {
+		case html.ErrorToken:
+			break loop
+		case html.StartTagToken:
+			t := htmlTokens.Token()
+			for _, v := range t.Attr {
+				if v.Key == "class" {
+					classArr := strings.Split(v.Val, " ")
+					for _, class := range classArr {
+						class = strings.TrimSpace(class)
+						if class != "" {
+							classesMap[class] = utils.Exists
+						}
+					}
+				}
 			}
-			log.Fatal(err)
 		}
 	}
 	return classesMap
