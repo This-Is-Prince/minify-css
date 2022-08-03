@@ -2,9 +2,7 @@ package extract
 
 import (
 	"os"
-	"strings"
 
-	"github.com/This-Is-Prince/minify-css/minify/utils"
 	"golang.org/x/net/html"
 )
 
@@ -19,17 +17,7 @@ loop:
 			break loop
 		case html.StartTagToken:
 			t := htmlTokens.Token()
-			for _, v := range t.Attr {
-				if v.Key == "class" {
-					classArr := strings.Split(v.Val, " ")
-					for _, class := range classArr {
-						class = strings.TrimSpace(class)
-						if class != "" {
-							classesMap[class] = utils.Exists
-						}
-					}
-				}
-			}
+			putClassInMap(&t, classesMap)
 		}
 	}
 	return classesMap

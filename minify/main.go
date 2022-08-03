@@ -12,9 +12,15 @@ func Run() {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		classes:=extract.Class(file)
-		for class:=range classes{
+		classes := extract.Class(file)
+		for class := range classes {
 			fmt.Println(class)
+		}
+		copyFile, err := htmlFile.Create()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(copyFile.Name())
 		}
 	}
 }
